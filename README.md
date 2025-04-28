@@ -16,5 +16,6 @@ Este sistema permite que professores gerenciem alunos, notas e presenças de for
 - [@CarlosDU444](https://github.com/CarlosDU444)
 - [@inaciodimitri](https://github.com/inaciodimitri)
 - [@mucalay](https://github.com/mucalay)
+- [@Tiago0Bezerra](https://github.com/Tiago0Bezerra)
 - [@ThiagoM5](https://github.com/ThiagoM5)
 
