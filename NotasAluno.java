@@ -39,9 +39,14 @@ public class NotasAluno {
         this.nota3 = nota3;
     }
 
-   
+   public String situacao() {
+        double media = calcularMedia();
+        if (media >= 6.0) {
+            return "Aprovado";
+        } else {
+            return "Reprovado";
   
     
- 
+        }
     }
 }
