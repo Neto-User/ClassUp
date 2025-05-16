@@ -5,10 +5,9 @@ Projeto do 1° semestre do curso de Análise e desenvolvimento de Sistemas (UniF
 Este sistema permite que professores gerenciem alunos, notas e presenças de forma eficiente. 
 
 ## 🚀 Funcionalidades
-- Cadastro e autenticação de usuários ou seja, do Admin e Professor
+- Cadastro e autenticação de usuários ou seja, do Admin/Professor
 - Cadastro de alunos e turmas
 - Registro de notas e presenças
-- Geração de relatórios
 
   
 ## Contribuidores ✨
