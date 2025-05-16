@@ -1,12 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author adelv
- */
-public class ColecaoNotas {
+package classup;
+import java.util.ArrayList;
+    private ArrayList<Double> notas;
     
+    public ColecaoNotas() {
+        this.notas = new ArrayList<>();
+    }
+    
+    public void adicionarNota(double nota) {
+        this.notas.add(nota);
+    }
+
+    public ArrayList<Double> getNotas() {
+        return notas;
+    }
 }
+
