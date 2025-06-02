@@ -1,0 +1,264 @@
+package telanota;
+
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Random;
+
+public class TelaNotasAlunos extends javax.swing.JFrame {
+
+    private JTextField[] campoNotas = new JTextField[4];
+    private JTextField campoAvaliacaoExtra;
+    private JTextField campoNomeAluno, campoMatricula;
+    private JComboBox<String> comboDisciplinas;
+    private JLabel resultadoMedia, resultadoFinal;
+
+    public TelaNotasAlunos() {
+        initComponents();
+        this.setLocationRelativeTo(null);
+    }
+
+    private void initComponents() {
+        setTitle("ClassUp - Sistema de Notas");
+        setSize(900, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Usando painel com textura orgânica
+        setContentPane(new PainelTexturaOrganica());
+        getContentPane().setLayout(null);
+
+        JLabel nomeLabel = new JLabel("Aluno:");
+        nomeLabel.setBounds(30, 20, 60, 25);
+        getContentPane().add(nomeLabel);
+
+        campoNomeAluno = new JTextField("Inácio Lima Brito");
+        campoNomeAluno.setBounds(90, 20, 200, 25);
+        campoNomeAluno.setBackground(new Color(255, 250, 240));
+        getContentPane().add(campoNomeAluno);
+
+        JLabel matriculaLabel = new JLabel("Matrícula:");
+        matriculaLabel.setBounds(320, 20, 80, 25);
+        getContentPane().add(matriculaLabel);
+
+        campoMatricula = new JTextField("1012510956");
+        campoMatricula.setBounds(400, 20, 150, 25);
+        campoMatricula.setBackground(new Color(255, 250, 240));
+        getContentPane().add(campoMatricula);
+
+        JLabel disciplinaLabel = new JLabel("Disciplina:");
+        disciplinaLabel.setBounds(30, 60, 100, 25);
+        getContentPane().add(disciplinaLabel);
+
+        comboDisciplinas = new JComboBox<>(new String[]{"Matemática", "Português", "História", "Biologia", "Geografia", "Física"});
+        comboDisciplinas.setBounds(120, 60, 200, 25);
+        getContentPane().add(comboDisciplinas);
+
+        for (int i = 0; i < campoNotas.length; i++) {
+            JLabel label = new JLabel("Nota " + (i + 1) + ":");
+            label.setBounds(50, 110 + i * 40, 80, 30);
+            getContentPane().add(label);
+
+            campoNotas[i] = new JTextField();
+            campoNotas[i].setBounds(120, 110 + i * 40, 100, 30);
+            campoNotas[i].setBackground(new Color(255, 250, 240));
+            getContentPane().add(campoNotas[i]);
+
+            int next = i + 1;
+            campoNotas[i].addActionListener(e -> {
+                if (next < campoNotas.length) {
+                    campoNotas[next].requestFocus();
+                } else {
+                    campoAvaliacaoExtra.requestFocus();
+                }
+            });
+        }
+
+        JLabel labelExtra = new JLabel("Avaliação Extra (opcional):");
+        labelExtra.setBounds(50, 280, 200, 30);
+        getContentPane().add(labelExtra);
+
+        campoAvaliacaoExtra = new JTextField();
+        campoAvaliacaoExtra.setBounds(250, 280, 100, 30);
+        campoAvaliacaoExtra.setBackground(new Color(255, 250, 240));
+        getContentPane().add(campoAvaliacaoExtra);
+
+        BotaoArredondado calcularBtn = new BotaoArredondado("Calcular Média");
+        calcularBtn.setBounds(120, 330, 180, 40);
+        calcularBtn.setBackground(new Color(90, 85, 80));
+        calcularBtn.setForeground(Color.WHITE);
+        calcularBtn.addActionListener(e -> calcularMedia());
+        getContentPane().add(calcularBtn);
+
+        resultadoMedia = new JLabel("MÉDIA: ");
+        resultadoMedia.setBounds(100, 390, 300, 30);
+        resultadoMedia.setFont(new Font("SansSerif", Font.BOLD, 16));
+        getContentPane().add(resultadoMedia);
+
+        resultadoFinal = new JLabel("RESULTADO: ");
+        resultadoFinal.setBounds(100, 420, 300, 30);
+        resultadoFinal.setFont(new Font("SansSerif", Font.BOLD, 16));
+        getContentPane().add(resultadoFinal);
+
+        JPanel barraLateral = new JPanel();
+        barraLateral.setLayout(null);
+        barraLateral.setBackground(new Color(90, 85, 80));
+        barraLateral.setBounds(780, 0, 120, 600);
+        getContentPane().add(barraLateral);
+
+        JLabel labelTitulo = new JLabel("ClassUp");
+        labelTitulo.setBounds(23, 19, 80, 20);
+        labelTitulo.setFont(new Font("Serif", Font.BOLD, 18));
+        labelTitulo.setForeground(new Color(230, 210, 190));
+        barraLateral.add(labelTitulo);
+
+        JLabel iconAplus = new JLabel("A+");
+        iconAplus.setOpaque(true);
+        iconAplus.setBackground(new Color(204, 153, 102));
+        iconAplus.setForeground(Color.WHITE);
+        iconAplus.setHorizontalAlignment(SwingConstants.CENTER);
+        iconAplus.setBounds(35, 60, 40, 40);
+        barraLateral.add(iconAplus);
+    }
+
+    private void calcularMedia() {
+        double soma = 0;
+        int contador = 0;
+
+        for (JTextField campo : campoNotas) {
+            try {
+                double nota = Double.parseDouble(campo.getText());
+                if (nota >= 0 && nota <= 10) {
+                    soma += nota;
+                    contador++;
+                }
+            } catch (NumberFormatException ignored) {}
+        }
+
+        try {
+            String extra = campoAvaliacaoExtra.getText();
+            if (!extra.isEmpty()) {
+                double notaExtra = Double.parseDouble(extra);
+                if (notaExtra >= 0 && notaExtra <= 10) {
+                    soma += notaExtra;
+                    contador++;
+                }
+            }
+        } catch (NumberFormatException ignored) {}
+
+        if (contador > 0) {
+            double media = soma / contador;
+            resultadoMedia.setText(String.format("MÉDIA: %.2f", media));
+            resultadoFinal.setText(media >= 7 ? "RESULTADO: Aprovado ✅" : "RESULTADO: Reprovado ❌");
+        } else {
+            resultadoMedia.setText("MÉDIA: ---");
+            resultadoFinal.setText("RESULTADO: Insira pelo menos 1 nota.");
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new TelaNotasAlunos().setVisible(true));
+    }
+
+    // Painel com padrão orgânico (linhas diagonais finas e aleatórias)
+    class PainelTexturaOrganica extends JPanel {
+        private final Color corFundo = new Color(230, 210, 190);
+        private final Color corLinhas = new Color(170, 140, 110, 80); // marrom claro com alpha (transparência)
+        private final int espacamento = 30;
+        private final Random random = new Random();
+
+        public PainelTexturaOrganica() {
+            setLayout(null);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+
+            // Fundo bege
+            g2.setColor(corFundo);
+            g2.fillRect(0, 0, getWidth(), getHeight());
+
+            // Configura linhas finas e suaves
+            g2.setColor(corLinhas);
+            g2.setStroke(new BasicStroke(1f));
+
+            int largura = getWidth();
+            int altura = getHeight();
+
+            // Desenha linhas diagonais com leve aleatoriedade, em duas direções cruzadas
+
+            // Linhas diagonais de cima-esquerda para baixo-direita
+            for (int x = -altura; x < largura; x += espacamento) {
+                int deslocX1 = random.nextInt(10) - 5; // variação -5 a +4
+                int deslocY1 = random.nextInt(10) - 5;
+                int deslocX2 = random.nextInt(10) - 5;
+                int deslocY2 = random.nextInt(10) - 5;
+
+                g2.drawLine(x + deslocX1, 0 + deslocY1, x + altura + deslocX2, altura + deslocY2);
+            }
+
+            // Linhas diagonais de cima-direita para baixo-esquerda
+            for (int x = 0; x < largura + altura; x += espacamento) {
+                int deslocX1 = random.nextInt(10) - 5;
+                int deslocY1 = random.nextInt(10) - 5;
+                int deslocX2 = random.nextInt(10) - 5;
+                int deslocY2 = random.nextInt(10) - 5;
+
+                g2.drawLine(x + deslocX1, 0 + deslocY1, x - altura + deslocX2, altura + deslocY2);
+            }
+
+            g2.dispose();
+        }
+    }
+
+    // Botão arredondado personalizado
+    class BotaoArredondado extends JButton {
+
+        private int raio = 20; // raio da borda arredondada
+
+        public BotaoArredondado(String texto) {
+            super(texto);
+            setContentAreaFilled(false);
+            setFocusPainted(false);
+            setBorderPainted(false);
+            setOpaque(false);
+            setForeground(Color.WHITE);
+            setFont(getFont().deriveFont(Font.BOLD));
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+
+            // Suaviza as bordas
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            // Cor de fundo
+            if (getModel().isPressed()) {
+                g2.setColor(getBackground().darker());
+            } else if (getModel().isRollover()) {
+                g2.setColor(getBackground().brighter());
+            } else {
+                g2.setColor(getBackground());
+            }
+
+            // Desenha o fundo arredondado
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), raio, raio);
+
+            // Desenha a borda arredondada
+            g2.setColor(getBackground().darker());
+            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, raio, raio);
+
+            g2.dispose();
+
+            super.paintComponent(g);
+        }
+
+        @Override
+        public void paintBorder(Graphics g) {
+            // Não desenha borda padrão
+        }
+    }
+}
