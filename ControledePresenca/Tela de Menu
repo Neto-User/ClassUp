@@ -1,0 +1,150 @@
+package classup;
+
+import javax.swing.*;
+import javax.swing.border.*;
+import java.awt.*;
+
+public class TelaOpcoes extends JFrame {
+
+    public TelaOpcoes() {
+        setTitle("ClassUp - Menu");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(500, 500);
+        setLocationRelativeTo(null);
+        setResizable(false);
+
+        // Cores personalizadas
+        Color fundoPrincipal = new Color(176, 148, 130); // marrom pastel
+        Color corBotao = new Color(232, 225, 217);       // bege claro
+        Color corTexto = new Color(60, 45, 35);          // marrom escuro
+        Color corDestaque = new Color(178, 91, 72);      // vermelho queimado
+        Color corTopo = new Color(145, 115, 100);        // tom intermediário
+        Color corSombra = new Color(0, 0, 0, 40);        // preto com transparência para sombra
+
+        // Painel principal com BorderLayout
+        JPanel painelPrincipal = new JPanel(new BorderLayout());
+        painelPrincipal.setBackground(fundoPrincipal);
+
+        // Título no topo
+        JLabel titulo = new JLabel("✎ ClassUp! 🎓", SwingConstants.CENTER);
+        titulo.setFont(new Font("Serif", Font.BOLD, 36));
+        titulo.setForeground(Color.WHITE);
+        titulo.setOpaque(true);
+        titulo.setBackground(corTopo);
+        titulo.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        painelPrincipal.add(titulo, BorderLayout.NORTH);
+
+        // Painel central com botões e sombra
+        JPanel painelCentral = new JPanel(new GridBagLayout());
+        painelCentral.setBackground(fundoPrincipal);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(12, 40, 12, 40);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+
+        String[] textos = {
+            "REGISTRAR PRESENÇA",
+            "CADASTRAR ALUNO",
+            "LANÇAR NOTAS",
+            "GERENCIAR TURMAS",
+            "CONFIGURAÇÕES"
+        };
+
+        Runnable[] acoes = {
+            () -> new TelaRegistroPresenca().setVisible(true),
+            () -> new TelaCadastroAluno().setVisible(true),
+            () -> new TelaNotas().setVisible(true),
+            () -> new TelaGerenciarTurma().setVisible(true),
+            () -> abrirConfiguracoes()
+        };
+
+        for (int i = 0; i < textos.length; i++) {
+            JButton botao = new JButton(textos[i]);
+            botao.setBackground(corBotao);
+            botao.setForeground(corTexto);
+            botao.setFont(new Font("SansSerif", Font.BOLD, 16));
+            botao.setFocusPainted(false);
+            botao.setPreferredSize(new Dimension(300, 50));
+            botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            int finalI = i;
+            botao.addActionListener(e -> acoes[finalI].run());
+
+            // Painel para criar sombra atrás do botão
+            JPanel painelComSombra = new JPanel(new BorderLayout()) {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    g.setColor(corSombra);
+                    g.fillRoundRect(5, 5, getWidth() - 10, getHeight() - 10, 15, 15);
+                }
+            };
+            painelComSombra.setOpaque(false);
+            painelComSombra.setBorder(new EmptyBorder(5, 5, 5, 5));
+            painelComSombra.add(botao, BorderLayout.CENTER);
+
+            gbc.gridy = i;
+            painelCentral.add(painelComSombra, gbc);
+        }
+
+        painelPrincipal.add(painelCentral, BorderLayout.CENTER);
+
+        // Rodapé com botão sair
+        JPanel painelRodape = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        painelRodape.setBackground(fundoPrincipal);
+
+        JButton btnSair = new JButton("Sair");
+        btnSair.setBackground(corDestaque);
+        btnSair.setForeground(Color.WHITE);
+        btnSair.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        btnSair.setFocusPainted(false);
+        btnSair.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        btnSair.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnSair.addActionListener(e -> dispose());
+
+        painelRodape.add(btnSair);
+        painelPrincipal.add(painelRodape, BorderLayout.SOUTH);
+
+        add(painelPrincipal);
+    }
+
+    private void abrirConfiguracoes() {
+        JOptionPane.showMessageDialog(this, "Tela de Configurações ainda não implementada.");
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new TelaOpcoes().setVisible(true));
+    }
+
+    // Stubs das telas para evitar erro de compilação
+    private static class TelaRegistroPresenca extends JFrame {
+        public TelaRegistroPresenca() {
+            setTitle("Registro de Presença");
+            setSize(350, 250);
+            setLocationRelativeTo(null);
+        }
+    }
+
+    private static class TelaCadastroAluno extends JFrame {
+        public TelaCadastroAluno() {
+            setTitle("Cadastro de Aluno");
+            setSize(300, 200);
+            setLocationRelativeTo(null);
+        }
+    }
+
+    private static class TelaNotas extends JFrame {
+        public TelaNotas() {
+            setTitle("Lançar Notas");
+            setSize(350, 250);
+            setLocationRelativeTo(null);
+        }
+    }
+
+    private static class TelaGerenciarTurma extends JFrame {
+        public TelaGerenciarTurma() {
+            setTitle("Gerenciar Turmas");
+            setSize(350, 250);
+            setLocationRelativeTo(null);
+        }
+    }
+}
