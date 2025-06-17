@@ -1,0 +1,313 @@
+package classup;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+
+public class LoginScreen extends JFrame {
+
+    public LoginScreen() {
+        setTitle("ClassUp - Login");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setLayout(new BorderLayout());
+
+        // Painel principal com degradê e estrelas
+        JPanel mainPanel = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                int w = getWidth();
+                int h = getHeight();
+
+                GradientPaint gp = new GradientPaint(0, 0, new Color(156, 128, 110),
+                        w, h, new Color(212, 200, 190).darker());
+                g2.setPaint(gp);
+                g2.fillRect(0, 0, w, h);
+
+                g2.setFont(new Font("Sanserif", Font.PLAIN, 44)); // ESTRELAS MAIORES
+                g2.setColor(new Color(255, 255, 255, 200));    // MENOS TRANSPARENTES
+                for (int i = 0; i < 10; i++) {
+                    int x = (int) (Math.random() * w);
+                    int y = (int) (Math.random() * h);
+                    g2.drawString("✧", x, y);
+                }
+            }
+        };
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+        JLabel logoLabel = new JLabel("✎");
+        logoLabel.setFont(new Font("Serif", Font.BOLD, 100));
+        logoLabel.setForeground(new Color(250, 245, 240));
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel titleLabel = new JLabel("ClassUp");
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 64));
+        titleLabel.setForeground(new Color(250, 245, 240));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Campos de email e senha mais altos
+        PlaceholderTextField emailField = new PlaceholderTextField("E-mail");
+        PlaceholderPasswordField passField = new PlaceholderPasswordField("Senha");
+
+        Dimension fieldSize = new Dimension(380, 40); // ALTURA AJUSTADA
+        emailField.setMaximumSize(fieldSize);
+        passField.setMaximumSize(fieldSize);
+        emailField.setBackground(new Color(232, 225, 217));
+        passField.setBackground(new Color(232, 225, 217));
+        Color borderColor = new Color(100, 70, 50);
+        emailField.setBorder(BorderFactory.createLineBorder(borderColor, 2, true));
+        passField.setBorder(BorderFactory.createLineBorder(borderColor, 2, true));
+
+        // Botões lado a lado, marrom compatível, texto maior
+        JButton loginButton = new JButton("Login");
+        JButton registerButton = new JButton("Cadastrar-se");
+        Dimension btnSize = new Dimension(180, 50);
+        loginButton.setPreferredSize(btnSize);
+        registerButton.setPreferredSize(btnSize);
+
+        Color buttonColor = new Color(120, 90, 70);
+        loginButton.setBackground(buttonColor);
+        registerButton.setBackground(buttonColor);
+        loginButton.setForeground(Color.WHITE);
+        registerButton.setForeground(Color.WHITE);
+
+        Font buttonFont = new Font("SansSerif", Font.BOLD, 18); // TEXTO MAIOR
+        loginButton.setFont(buttonFont);
+        registerButton.setFont(buttonFont);
+
+        JPanel buttonsRow = new JPanel();
+        buttonsRow.setOpaque(false);
+        buttonsRow.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        buttonsRow.add(loginButton);
+        buttonsRow.add(registerButton);
+
+        // Links centralizados, sublinhados, mesma cor
+        JButton forgotButton = new JButton("Esqueci minha senha");
+        JButton alunoButton = new JButton("Entrar como Aluno");
+        forgotButton.setBorderPainted(false);
+        alunoButton.setBorderPainted(false);
+        forgotButton.setContentAreaFilled(false);
+        alunoButton.setContentAreaFilled(false);
+        forgotButton.setForeground(Color.WHITE);
+        alunoButton.setForeground(Color.WHITE);
+        
+        
+        forgotButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        alunoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Ações
+        registerButton.addActionListener(e -> {
+            new RegisterScreen().setVisible(true);
+            dispose();
+        });
+
+        forgotButton.addActionListener(e -> {
+            new ForgotPasswordScreen().setVisible(true);
+            dispose();
+        });
+
+        alunoButton.addActionListener(e -> {
+            new AlunoLoginScreen().setVisible(true);
+            dispose();
+        });
+
+        // Montagem
+        mainPanel.add(Box.createVerticalGlue());
+        mainPanel.add(logoLabel);
+        mainPanel.add(titleLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+        mainPanel.add(emailField);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        mainPanel.add(passField);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+        mainPanel.add(buttonsRow);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        mainPanel.add(forgotButton);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        mainPanel.add(alunoButton);
+        mainPanel.add(Box.createVerticalGlue());
+
+        add(mainPanel, BorderLayout.CENTER);
+        setVisible(true);
+    }
+
+    // Placeholder Fields
+    class PlaceholderTextField extends JTextField {
+        private String placeholder;
+        public PlaceholderTextField(String placeholder) {
+            this.placeholder = placeholder;
+        }
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (getText().isEmpty() && !isFocusOwner()) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(new Color(150, 150, 150, 120));
+                g2.setFont(getFont().deriveFont(Font.PLAIN, 16));
+                Insets insets = getInsets();
+                g2.drawString(placeholder, insets.left + 5, getHeight() / 2 + 5);
+                g2.dispose();
+            }
+        }
+    }
+
+    class PlaceholderPasswordField extends JPasswordField {
+        private String placeholder;
+        public PlaceholderPasswordField(String placeholder) {
+            this.placeholder = placeholder;
+        }
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (getPassword().length == 0 && !isFocusOwner()) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(new Color(150, 150, 150, 120));
+                g2.setFont(getFont().deriveFont(Font.PLAIN, 16));
+                Insets insets = getInsets();
+                g2.drawString(placeholder, insets.left + 5, getHeight() / 2 + 5);
+                g2.dispose();
+            }
+        }
+    }
+
+    // Register Screen
+    class RegisterScreen extends JFrame {
+        public RegisterScreen() {
+            setTitle("ClassUp - Cadastro");
+            setSize(600, 400);
+            getContentPane().setBackground(new Color(212, 200, 190));
+            JLabel label = new JLabel("Para cadastrar em nosso sistema - ClassUp -Contate suporte@classup.com"
+                    + "para começarmos seu cadastro!");
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            JButton backButton = new JButton("Voltar");
+            backButton.setBackground(new Color(120, 90, 70));
+            backButton.setForeground(Color.WHITE);
+            backButton.setFont(new Font("Serif", Font.BOLD, 18));
+            backButton.addActionListener(e -> {
+                new LoginScreen().setVisible(true);
+                dispose();
+            });
+            setLayout(new BorderLayout());
+            add(label, BorderLayout.CENTER);
+            add(backButton, BorderLayout.SOUTH);
+        }
+    }
+
+    // Forgot Password Screen
+    class ForgotPasswordScreen extends JFrame {
+        public ForgotPasswordScreen() {
+            setTitle("ClassUp - Recuperar Senha");
+            setSize(600, 400);
+            getContentPane().setBackground(new Color(212, 200, 190));
+            setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+
+            JLabel label = new JLabel("Digite seu E-mail cadastrado.<br>Você receberá um código para acessar o sistema e alterar sua senha.");
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            JTextField emailField = new JTextField();
+            emailField.setMaximumSize(new Dimension(300, 30));
+
+            JButton enviarButton = new JButton("Enviar Código");
+            enviarButton.setBackground(new Color(120, 90, 70));
+            enviarButton.setForeground(Color.WHITE);
+            enviarButton.setFont(new Font("SansSerif", Font.BOLD, 18));
+            enviarButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            JButton backButton = new JButton("Voltar");
+            backButton.setBackground(new Color(120, 90, 70));
+            backButton.setForeground(Color.WHITE);
+            backButton.setFont(new Font("SansSerif", Font.BOLD, 18));
+            backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            backButton.addActionListener(e -> {
+                new LoginScreen().setVisible(true);
+                dispose();
+            });
+
+            add(Box.createVerticalGlue());
+            add(label);
+            add(Box.createRigidArea(new Dimension(0, 10)));
+            add(emailField);
+            add(Box.createRigidArea(new Dimension(0, 10)));
+            add(enviarButton);
+            add(Box.createRigidArea(new Dimension(0, 10)));
+            add(backButton);
+            add(Box.createVerticalGlue());
+        }
+    }
+
+    // Aluno login
+    class AlunoLoginScreen extends JFrame {
+        public AlunoLoginScreen() {
+            setTitle("ClassUp - Login Aluno");
+            setSize(600, 400);
+            getContentPane().setBackground(new Color(212, 200, 190));
+            setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+
+            JLabel label = new JLabel("Digite seu Nome e CPF para acessar suas notas");
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
+            JTextField nomeField = new JTextField();
+            JTextField cpfField = new JTextField();
+            nomeField.setMaximumSize(new Dimension(300, 30));
+            cpfField.setMaximumSize(new Dimension(300, 30));
+
+            JButton acessarButton = new JButton("Acessar");
+            acessarButton.setBackground(new Color(120, 90, 70));
+            acessarButton.setForeground(Color.WHITE);
+            acessarButton.setFont(new Font("SansSerif", Font.BOLD, 18));
+            acessarButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            acessarButton.addActionListener(e -> {
+                new AlunoScreen().setVisible(true);
+                dispose();
+            });
+
+            JButton backButton = new JButton("Voltar");
+            backButton.setBackground(new Color(120, 90, 70));
+            backButton.setForeground(Color.WHITE);
+            backButton.setFont(new Font("SansSerif", Font.BOLD, 18));
+            backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            backButton.addActionListener(e -> {
+                new LoginScreen().setVisible(true);
+                dispose();
+            });
+
+            add(Box.createVerticalGlue());
+            add(label);
+            add(Box.createRigidArea(new Dimension(0, 10)));
+            add(nomeField);
+            add(Box.createRigidArea(new Dimension(0, 10)));
+            add(cpfField);
+            add(Box.createRigidArea(new Dimension(0, 10)));
+            add(acessarButton);
+            add(Box.createRigidArea(new Dimension(0, 10)));
+            add(backButton);
+            add(Box.createVerticalGlue());
+        }
+    }
+
+    // Área do Aluno
+    class AlunoScreen extends JFrame {
+        public AlunoScreen() {
+            setTitle("ClassUp - Área do Aluno");
+            setSize(600, 400);
+            getContentPane().setBackground(new Color(212, 200, 190));
+            setLayout(new BorderLayout());
+            JLabel label = new JLabel("<html>Nome: João da Silva<br>CPF: 123.456.789-00<br>Notas: 9.0, 8.5, 10<br>Presenças: 95%<br>Data: 16/06/2025</html>");
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+
+            JButton backButton = new JButton("Voltar");
+            backButton.setBackground(new Color(120, 90, 70));
+            backButton.setForeground(Color.WHITE);
+            backButton.setFont(new Font("SansSerif", Font.BOLD, 18));
+            backButton.addActionListener(e -> {
+                new LoginScreen().setVisible(true);
+                dispose();
+            });
+
+            add(label, BorderLayout.CENTER);
+            add(backButton, BorderLayout.SOUTH);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(LoginScreen::new);
+    }
+}
